@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Caja;
 use App\Models\Cliente;
+use App\Models\DocumentoPrevio;
 use App\Models\Comprobante;
 use App\Models\Producto;
 use App\Models\Serie;
@@ -95,6 +96,11 @@ class ComprobanteService
             }
 
             $comprobante->update(array_map(fn ($v) => round($v, 2), $totales));
+
+            if (! empty($datos['documento_previo_id'])) {
+                DocumentoPrevio::whereKey($datos['documento_previo_id'])->where('estado', 'pendiente')
+                    ->update(['estado' => 'convertido', 'comprobante_id' => $comprobante->id]);
+            }
 
             Caja::abiertaDe($datos['user_id'] ?? null)?->movimientos()->create([
                 'tipo' => 'ingreso',

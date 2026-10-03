@@ -7,9 +7,11 @@
 <form method="POST" action="{{ route('comprobantes.store') }}"
       x-data="venta(@js($productos->map->only(['id', 'codigo', 'nombre', 'precio_venta', 'stock', 'unidad_medida', 'afectacion_igv'])), @js($series->map->only(['serie', 'tipo_comprobante'])), @js($clientes), {{ (float) config('sunat.igv') }})"
       @keydown.enter="if ($event.target.tagName === 'INPUT') $event.preventDefault()"
+      x-init="cargarPrevio(@js($previo ? ['cliente_id' => $previo->cliente_id, 'items' => $previo->items->map(fn ($i) => ['producto_id' => $i->producto_id, 'cantidad' => (float) $i->cantidad, 'precio_unitario' => (float) $i->precio_unitario])] : null))"
       class="bg-white rounded-lg shadow overflow-hidden">
     @csrf
-    <div class="bg-blue-600 text-white px-5 py-3 text-lg">Nuevo comprobante</div>
+    <div class="bg-blue-600 text-white px-5 py-3 text-lg">Nuevo comprobante @if ($previo)<span class="text-blue-100 text-sm">desde {{ $previo->nombreTipo() }} {{ $previo->codigo() }}</span>@endif</div>
+    @if ($previo)<input type="hidden" name="documento_previo_id" value="{{ $previo->id }}">@endif
     <div class="p-5 grid lg:grid-cols-4 gap-6">
         <div class="lg:col-span-3 space-y-5">
             <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 text-sm">
@@ -101,7 +103,7 @@
 
         <div class="space-y-4 lg:border-l lg:pl-6">
             <label class="block text-sm text-blue-700">Observaciones
-                <textarea name="observaciones" rows="3" class="mt-1 w-full border rounded px-3 py-2 text-slate-800">{{ old('observaciones') }}</textarea>
+                <textarea name="observaciones" rows="3" class="mt-1 w-full border rounded px-3 py-2 text-slate-800">{{ old('observaciones', $previo?->observaciones) }}</textarea>
             </label>
             <div class="bg-slate-50 rounded p-4 text-sm space-y-1">
                 <div class="flex justify-between" x-show="totales.gravadas"><span>Op. gravadas</span><span x-text="'S/ ' + totales.gravadas.toFixed(2)"></span></div>
@@ -158,6 +160,15 @@ function venta(productos, series, clientes, igv) {
             this.$refs.buscador.focus();
         },
         agregarPrimero() { if (this.filtrados.length) this.agregar(this.filtrados[0]) },
+        cargarPrevio(previo) {
+            if (! previo) return;
+            const cliente = this.clientes.find(c => c.id === previo.cliente_id);
+            if (cliente) { this.elegirCliente(cliente); if (cliente.tipo_documento === '6') this.tipo = '01'; }
+            for (const linea of previo.items) {
+                const p = this.productos.find(p => p.id === linea.producto_id);
+                if (p) this.items.push({ producto_id: p.id, nombre: p.nombre, unidad: p.unidad_medida, afectacion: p.afectacion_igv, cantidad: linea.cantidad, precio_unitario: linea.precio_unitario });
+            }
+        },
     };
 }
 </script>

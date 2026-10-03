@@ -52,6 +52,10 @@ En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.cs
 
 Si el código ya existe, el producto se actualiza y el stock se ajusta al valor del archivo (queda registrado en el kardex).
 
+## Cotizaciones y pedidos
+
+Se registran sin mover stock, con su PDF para enviar al cliente (COT-00001, PED-00001). Con **Convertir en venta** se abre el nuevo comprobante con el cliente, los productos y los precios ya cargados; al emitirlo, la cotización o el pedido queda como vendido y enlazado al comprobante.
+
 ## Notas de crédito y anulaciones
 
 - Desde el detalle de una factura o boleta **aceptada por SUNAT** se emite una **nota de crédito** (series `FC01` para facturas y `BC01` para boletas) con motivo 01 anulación, 06 devolución total o 07 devolución por ítem. Los productos vuelven al stock, el dinero sale de la caja abierta y los reportes restan la nota.

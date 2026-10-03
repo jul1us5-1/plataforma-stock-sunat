@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Caja;
 use App\Models\Cliente;
 use App\Models\Comprobante;
+use App\Models\DocumentoPrevio;
 use App\Models\Producto;
 use App\Models\Serie;
 use App\Services\ComprobantePdf;
@@ -29,9 +30,13 @@ class ComprobanteController extends Controller
         return view('comprobantes.index', compact('comprobantes'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        // Venta a partir de una cotización o pedido pendiente
+        $previo = $request->previo ? DocumentoPrevio::with('items.producto')->where('estado', 'pendiente')->find($request->previo) : null;
+
         return view('comprobantes.create', [
+            'previo' => $previo,
             'series' => Serie::where('activo', true)->whereIn('tipo_comprobante', Comprobante::TIPOS_VENTA)->orderBy('serie')->get(),
             'clientes' => Cliente::orderBy('razon_social')->get(['id', 'tipo_documento', 'numero_documento', 'razon_social']),
             'productos' => Producto::where('activo', true)->orderByRaw('LOWER(nombre)')->get(),
@@ -46,6 +51,7 @@ class ComprobanteController extends Controller
             'serie' => ['required', 'exists:series,serie'],
             'cliente_id' => ['nullable', 'exists:clientes,id'],
             'observaciones' => ['nullable', 'string', 'max:500'],
+            'documento_previo_id' => ['nullable', Rule::exists('documentos_previos', 'id')->where('estado', 'pendiente')],
             'metodo_pago' => ['required', Rule::in(array_keys(Caja::METODOS_PAGO))],
             'items' => ['required', 'array', 'min:1'],
             'items.*.producto_id' => ['required', 'exists:productos,id'],

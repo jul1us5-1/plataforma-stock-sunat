@@ -5,6 +5,7 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentoPrevioController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteController;
 use App\Services\ComprobantePdf;
@@ -29,6 +30,15 @@ Route::middleware('auth')->group(function () {
     Route::get('productos/{producto}/movimientos', [ProductoController::class, 'movimientos'])->name('productos.movimientos');
     Route::post('productos/{producto}/stock', [ProductoController::class, 'ajustarStock'])->name('productos.stock');
     Route::resource('productos', ProductoController::class)->except('show');
+
+    Route::prefix('{ruta}')->whereIn('ruta', ['cotizaciones', 'pedidos'])->name('previos.')->group(function () {
+        Route::get('/', [DocumentoPrevioController::class, 'index'])->name('index');
+        Route::get('nuevo', [DocumentoPrevioController::class, 'create'])->name('create');
+        Route::post('/', [DocumentoPrevioController::class, 'store'])->name('store');
+        Route::get('{documento}', [DocumentoPrevioController::class, 'show'])->name('show');
+        Route::post('{documento}/anular', [DocumentoPrevioController::class, 'anular'])->name('anular');
+        Route::get('{documento}/pdf', [DocumentoPrevioController::class, 'pdf'])->name('pdf');
+    });
 
     Route::get('caja', [CajaController::class, 'index'])->name('caja.index');
     Route::post('caja/abrir', [CajaController::class, 'abrir'])->name('caja.abrir');

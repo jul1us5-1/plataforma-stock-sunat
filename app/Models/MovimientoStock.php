@@ -9,7 +9,7 @@ class MovimientoStock extends Model
 {
     protected $table = 'movimientos_stock';
 
-    protected $fillable = ['producto_id', 'tipo', 'cantidad', 'stock_resultante', 'comprobante_id', 'motivo'];
+    protected $fillable = ['producto_id', 'tipo', 'cantidad', 'stock_resultante', 'comprobante_id', 'compra_id', 'motivo'];
 
     protected function casts(): array
     {
@@ -22,6 +22,11 @@ class MovimientoStock extends Model
     public function producto(): BelongsTo
     {
         return $this->belongsTo(Producto::class);
+    }
+
+    public function compra(): BelongsTo
+    {
+        return $this->belongsTo(Compra::class);
     }
 
     public function comprobante(): BelongsTo

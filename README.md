@@ -52,6 +52,10 @@ En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.cs
 
 Si el código ya existe, el producto se actualiza y el stock se ajusta al valor del archivo (queda registrado en el kardex).
 
+## Compras y proveedores
+
+Al registrar una compra (factura, boleta u otro) el stock sube solo y se actualiza el **costo** de cada producto, que es lo que usan los reportes de utilidad. Con factura, el costo se guarda sin IGV (crédito fiscal); con boleta, el IGV forma parte del costo. Si se paga con dinero de la caja, sale como egreso. Una compra registrada por error se puede anular y el stock se descuenta.
+
 ## Cotizaciones y pedidos
 
 Se registran sin mover stock, con su PDF para enviar al cliente (COT-00001, PED-00001). Con **Convertir en venta** se abre el nuevo comprobante con el cliente, los productos y los precios ya cargados; al emitirlo, la cotización o el pedido queda como vendido y enlazado al comprobante.

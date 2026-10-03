@@ -17,6 +17,8 @@
         ['previos.index:pedidos', 'Pedidos', 'M3 7l9-4 9 4-9 4-9-4zm0 0v10l9 4 9-4V7'],
         ['caja.index', 'Caja', 'M3 7h18v12H3zM3 11h18M7 15h2'],
         ['productos.index', 'Productos', 'M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z'],
+        ['compras.index', 'Compras', 'M3 3h2l2 12h12l2-8H6M9 20a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z'],
+        ['proveedores.index', 'Proveedores', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
         ['clientes.index', 'Clientes', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM4 21v-1a6 6 0 0112 0v1'],
         ['reportes.index', 'Reportes', 'M4 20V10m6 10V4m6 16v-7m4 7H2'],
     ];

@@ -54,6 +54,15 @@
     </table>
 </div>
 
+<div class="bg-white rounded-lg shadow p-4 mb-4">
+    <h2 class="font-semibold mb-2">Compras del periodo</h2>
+    <div class="grid sm:grid-cols-3 gap-4 text-sm">
+        <div><div class="text-slate-500">Compras registradas</div><div class="text-lg font-semibold">{{ $compras['cantidad'] }}</div></div>
+        <div><div class="text-slate-500">Total comprado</div><div class="text-lg font-semibold">S/ {{ number_format($compras['total'], 2) }}</div></div>
+        <div><div class="text-slate-500">IGV de compras (crédito fiscal)</div><div class="text-lg font-semibold">S/ {{ number_format($compras['igv'], 2) }}</div></div>
+    </div>
+</div>
+
 <div class="bg-white rounded-lg shadow p-4">
     <h2 class="font-semibold mb-2">Inventario valorizado (hoy)</h2>
     <div class="grid sm:grid-cols-4 gap-4 text-sm">

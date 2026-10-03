@@ -78,7 +78,7 @@ class ProductoController extends Controller
 
     public function movimientos(Producto $producto)
     {
-        $movimientos = $producto->movimientos()->with('comprobante')->latest()->paginate(30);
+        $movimientos = $producto->movimientos()->with(['comprobante', 'compra'])->latest()->paginate(30);
 
         return view('productos.movimientos', compact('producto', 'movimientos'));
     }

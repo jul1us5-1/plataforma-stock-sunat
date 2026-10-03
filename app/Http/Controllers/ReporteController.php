@@ -23,6 +23,7 @@ class ReporteController extends Controller
             'metodos' => $reportes->porMetodoPago($desde, $hasta),
             'productos' => $reportes->productosVendidos($desde, $hasta),
             'inventario' => $reportes->inventarioValorizado(),
+            'compras' => $reportes->compras($desde, $hasta),
         ]);
     }
 

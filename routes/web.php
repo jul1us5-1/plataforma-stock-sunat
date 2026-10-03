@@ -3,10 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentoPrevioController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ReporteController;
 use App\Services\ComprobantePdf;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +50,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
     Route::get('reportes/ventas.csv', [ReporteController::class, 'exportarVentas'])->name('reportes.ventas');
+
+    Route::resource('proveedores', ProveedorController::class)->except(['show', 'destroy'])->parameters(['proveedores' => 'proveedor']);
+    Route::resource('compras', CompraController::class)->only(['index', 'create', 'store', 'show']);
+    Route::post('compras/{compra}/anular', [CompraController::class, 'anular'])->name('compras.anular');
 
     Route::resource('clientes', ClienteController::class)->except(['show', 'destroy']);
 

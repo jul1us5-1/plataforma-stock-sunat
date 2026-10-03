@@ -18,7 +18,7 @@
         <tr class="border-t">
             <td class="p-2">{{ $m->created_at->format('d/m/Y H:i') }}</td>
             <td class="p-2 capitalize">{{ $m->tipo }}</td>
-            <td class="p-2">@if ($m->comprobante)<a class="text-blue-700 hover:underline" href="{{ route('comprobantes.show', $m->comprobante) }}">{{ $m->motivo }}</a>@else{{ $m->motivo }}@endif</td>
+            <td class="p-2">@if ($m->comprobante)<a class="text-blue-700 hover:underline" href="{{ route('comprobantes.show', $m->comprobante) }}">{{ $m->motivo }}</a>@elseif ($m->compra)<a class="text-blue-700 hover:underline" href="{{ route('compras.show', $m->compra) }}">{{ $m->motivo }}</a>@else{{ $m->motivo }}@endif</td>
             <td class="p-2 text-right {{ $m->cantidad < 0 ? 'text-red-600' : 'text-emerald-700' }}">{{ $m->cantidad + 0 }}</td>
             <td class="p-2 text-right">{{ $m->stock_resultante + 0 }}</td>
         </tr>

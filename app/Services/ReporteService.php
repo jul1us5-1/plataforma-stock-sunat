@@ -103,6 +103,18 @@ class ReporteService
             ->get();
     }
 
+    /** @return array{cantidad: int, total: float, igv: float} */
+    public function compras(CarbonInterface $desde, CarbonInterface $hasta): array
+    {
+        $compras = \App\Models\Compra::where('estado', 'registrada')->whereBetween('fecha', [$desde->toDateString(), $hasta->toDateString()]);
+
+        return [
+            'cantidad' => (clone $compras)->count(),
+            'total' => (float) (clone $compras)->sum('total'),
+            'igv' => (float) (clone $compras)->sum('igv'),
+        ];
+    }
+
     /** @return array{productos: int, unidades: float, valor_venta: float, valor_costo: float, sin_costo: int} */
     public function inventarioValorizado(): array
     {

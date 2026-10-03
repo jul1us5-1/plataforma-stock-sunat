@@ -45,7 +45,7 @@ class Producto extends Model
      * Registra un movimiento de stock y actualiza el saldo del producto.
      * Debe llamarse dentro de una transacción.
      */
-    public function moverStock(float $cantidad, string $tipo, ?string $motivo = null, ?int $comprobanteId = null): MovimientoStock
+    public function moverStock(float $cantidad, string $tipo, ?string $motivo = null, ?int $comprobanteId = null, ?int $compraId = null): MovimientoStock
     {
         $this->stock = round((float) $this->stock + $cantidad, 2);
         $this->save();
@@ -56,6 +56,7 @@ class Producto extends Model
             'stock_resultante' => $this->stock,
             'motivo' => $motivo,
             'comprobante_id' => $comprobanteId,
+            'compra_id' => $compraId,
         ]);
     }
 }

@@ -17,6 +17,8 @@ Aplicación web en **Laravel** para:
 
 ## Instalación local
 
+Guía paso a paso para Windows con XAMPP: [docs/INSTALACION-XAMPP.md](docs/INSTALACION-XAMPP.md).
+
 ```bash
 composer install
 cp .env.example .env

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CompraController;
+use App\Http\Controllers\ConsultaDocumentoController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentoPrevioController;
@@ -58,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::get('caja/{caja}', [CajaController::class, 'show'])->name('caja.show');
 
     Route::resource('clientes', ClienteController::class)->except(['show', 'destroy']);
+    Route::get('consulta-documento/{numero}', ConsultaDocumentoController::class)
+        ->where('numero', '\d{8}|\d{11}')->middleware('throttle:30,1')->name('consulta-documento');
 });
 
 // Solo administradores

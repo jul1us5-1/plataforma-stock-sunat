@@ -28,9 +28,9 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
-        Cliente::create($this->validar($request));
+        $cliente = Cliente::create($this->validar($request));
 
-        return redirect()->route('clientes.index')->with('ok', 'Cliente creado.');
+        return redirect($this->volver($request, route('clientes.index')))->with('ok', "Cliente {$cliente->razon_social} creado.");
     }
 
     public function edit(Cliente $cliente)

@@ -27,7 +27,7 @@ class ProveedorController extends Controller
     {
         $proveedor = Proveedor::create($this->validar($request));
 
-        return redirect($request->input('volver', route('proveedores.index')))->with('ok', "Proveedor {$proveedor->razon_social} creado.");
+        return redirect($this->volver($request, route('proveedores.index')))->with('ok', "Proveedor {$proveedor->razon_social} creado.");
     }
 
     public function edit(Proveedor $proveedor)

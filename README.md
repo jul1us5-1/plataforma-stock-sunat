@@ -59,6 +59,10 @@ Si el código ya existe, el producto se actualiza y el stock se ajusta al valor 
 
 Los usuarios se crean en **Usuarios** y cada uno cambia su contraseña en **Mi cuenta** (clic en su nombre, arriba a la derecha). Un usuario desactivado ya no puede iniciar sesión.
 
+## Consulta de RUC y DNI
+
+En el formulario de clientes y proveedores, el botón **Buscar** completa la razón social y la dirección a partir del RUC o DNI, y avisa si el RUC no está ACTIVO/HABIDO. Necesita un token de un servicio de consulta (por ejemplo decolecta.com o apis.net.pe, que tienen plan gratuito) en `CONSULTA_DOC_TOKEN`. Sin token, el formulario funciona igual pero se llena a mano.
+
 ## Compras y proveedores
 
 Al registrar una compra (factura, boleta u otro) el stock sube solo y se actualiza el **costo** de cada producto, que es lo que usan los reportes de utilidad. Con factura, el costo se guarda sin IGV (crédito fiscal); con boleta, el IGV forma parte del costo. Si se paga con dinero de la caja, sale como egreso. Una compra registrada por error se puede anular y el stock se descuenta.
@@ -114,5 +118,4 @@ php artisan test
 
 - Notas de débito y comunicación de baja.
 - Resumen diario de boletas.
-- Consulta de RUC/DNI.
 - Despliegue en servidor.

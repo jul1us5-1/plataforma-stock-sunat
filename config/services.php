@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // Consulta de RUC (SUNAT) y DNI (RENIEC) para autocompletar clientes y proveedores.
+    // Compatible con APIs tipo decolecta / apis.net.pe que responden JSON con un token Bearer.
+    'consulta_documentos' => [
+        'url' => env('CONSULTA_DOC_URL', 'https://api.decolecta.com/v1'),
+        'token' => env('CONSULTA_DOC_TOKEN'),
+    ],
+
 ];

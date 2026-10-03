@@ -34,7 +34,7 @@
 
                 <div class="sm:col-span-2 relative">
                     <span class="text-blue-700 font-medium">Cliente</span>
-                    <a href="{{ route('clientes.create') }}" class="text-slate-400 hover:text-blue-700">[+ Nuevo]</a>
+                    <a href="{{ route('clientes.create', ['volver' => route('comprobantes.create')]) }}" class="text-slate-400 hover:text-blue-700">[+ Nuevo]</a>
                     <span class="text-xs text-slate-500" x-show="tipo === '01'">(con RUC)</span>
                     <input type="hidden" name="cliente_id" :value="cliente?.id ?? ''">
                     <input x-model="buscaCliente" @focus="abiertoCliente = true" @click.outside="abiertoCliente = false"

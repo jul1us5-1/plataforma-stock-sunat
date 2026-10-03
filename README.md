@@ -5,7 +5,8 @@ Aplicación web en **Laravel** para:
 - Registrar productos y controlar su stock (kardex con cada entrada, salida y ajuste).
 - Importar el catálogo de productos desde un CSV/Excel exportado.
 - Registrar clientes (DNI, RUC, carnet de extranjería, pasaporte).
-- Emitir **facturas** (01), **boletas** (03) y **recibos internos** (notas de venta que no van a SUNAT).
+- Emitir **facturas** (01), **boletas** (03) y **recibos internos** (notas de venta que no van a SUNAT), indicando el método de pago (efectivo, tarjeta, Yape, Plin, transferencia).
+- Manejar la **caja**: apertura con efectivo inicial, cada venta entra sola a la caja abierta, gastos e ingresos manuales, y cierre con arqueo (efectivo esperado vs. contado).
 - Enviar facturas y boletas a **SUNAT** en formato UBL 2.1 firmado, usando [Greenter](https://github.com/thegreenter/greenter), y guardar el XML y el CDR de respuesta.
 
 ## Requisitos

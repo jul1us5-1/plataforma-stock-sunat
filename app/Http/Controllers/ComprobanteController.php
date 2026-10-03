@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caja;
 use App\Models\Cliente;
 use App\Models\Comprobante;
 use App\Models\Producto;
@@ -32,6 +33,7 @@ class ComprobanteController extends Controller
             'series' => Serie::where('activo', true)->orderBy('serie')->get(),
             'clientes' => Cliente::orderBy('razon_social')->get(),
             'productos' => Producto::where('activo', true)->orderBy('nombre')->get(),
+            'cajaAbierta' => Caja::abiertaDe(auth()->id()),
         ]);
     }
 
@@ -41,13 +43,14 @@ class ComprobanteController extends Controller
             'tipo_comprobante' => ['required', Rule::in(array_keys(Comprobante::TIPOS))],
             'serie' => ['required', 'exists:series,serie'],
             'cliente_id' => ['nullable', 'exists:clientes,id'],
+            'metodo_pago' => ['required', Rule::in(array_keys(Caja::METODOS_PAGO))],
             'items' => ['required', 'array', 'min:1'],
             'items.*.producto_id' => ['required', 'exists:productos,id'],
             'items.*.cantidad' => ['required', 'numeric', 'gt:0'],
             'items.*.precio_unitario' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $comprobante = $servicio->emitir($datos);
+        $comprobante = $servicio->emitir([...$datos, 'user_id' => $request->user()->id]);
 
         return redirect()->route('comprobantes.show', $comprobante)->with('ok', "{$comprobante->nombreTipo()} {$comprobante->numero()} emitida.");
     }

@@ -26,6 +26,7 @@
     <div class="text-sm mb-4 grid grid-cols-2 gap-1">
         <div><strong>Cliente:</strong> {{ $comprobante->cliente?->razon_social ?? 'Clientes varios' }}</div>
         <div><strong>Fecha:</strong> {{ $comprobante->fecha_emision->format('d/m/Y H:i') }}</div>
+        <div><strong>Pago:</strong> {{ \App\Models\Caja::METODOS_PAGO[$comprobante->metodo_pago] ?? $comprobante->metodo_pago }}</div>
         @if ($comprobante->cliente)<div><strong>Documento:</strong> {{ $comprobante->cliente->numero_documento }}</div>@endif
         @if ($comprobante->cliente?->direccion)<div><strong>Dirección:</strong> {{ $comprobante->cliente->direccion }}</div>@endif
     </div>

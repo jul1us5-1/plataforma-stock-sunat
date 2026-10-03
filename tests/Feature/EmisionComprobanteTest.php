@@ -122,11 +122,12 @@ class EmisionComprobanteTest extends TestCase
                 'tipo_comprobante' => '01',
                 'serie' => 'F001',
                 'cliente_id' => $cliente->id,
+                'metodo_pago' => 'yape',
                 'items' => [['producto_id' => $producto->id, 'cantidad' => 3, 'precio_unitario' => 100]],
             ])
             ->assertRedirect();
 
-        $this->assertDatabaseHas('comprobantes', ['serie' => 'F001', 'correlativo' => 1, 'total' => 300]);
+        $this->assertDatabaseHas('comprobantes', ['serie' => 'F001', 'correlativo' => 1, 'total' => 300, 'metodo_pago' => 'yape']);
         $this->actingAs(User::first())->get(route('comprobantes.show', 1))->assertOk()->assertSee('F001-00000001');
     }
 

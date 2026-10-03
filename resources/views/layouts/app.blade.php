@@ -12,7 +12,7 @@
 <nav class="bg-slate-900 text-white">
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center gap-1 py-2">
         <a href="{{ route('dashboard') }}" class="font-semibold mr-4">{{ config('app.name') }}</a>
-        @foreach (['dashboard' => 'Inicio', 'productos.index' => 'Productos', 'clientes.index' => 'Clientes', 'comprobantes.index' => 'Comprobantes'] as $ruta => $texto)
+        @foreach (['dashboard' => 'Inicio', 'productos.index' => 'Productos', 'clientes.index' => 'Clientes', 'comprobantes.index' => 'Comprobantes', 'caja.index' => 'Caja'] as $ruta => $texto)
             <a href="{{ route($ruta) }}" class="px-3 py-1.5 rounded {{ request()->routeIs(str_replace('.index', '.*', $ruta)) ? 'bg-slate-700' : 'hover:bg-slate-800' }}">{{ $texto }}</a>
         @endforeach
         <a href="{{ route('comprobantes.create') }}" class="ml-auto bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded font-medium">+ Nueva venta</a>

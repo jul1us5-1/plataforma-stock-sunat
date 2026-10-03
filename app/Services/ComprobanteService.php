@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Caja;
 use App\Models\Cliente;
 use App\Models\Comprobante;
 use App\Models\Producto;
@@ -14,10 +15,10 @@ class ComprobanteService
     public function __construct(private SunatService $sunat) {}
 
     /**
-     * Emite un comprobante: reserva correlativo, calcula impuestos, descuenta stock
-     * y, si corresponde, lo envía a SUNAT.
+     * Emite un comprobante: reserva correlativo, calcula impuestos, descuenta stock,
+     * registra el cobro en la caja abierta del usuario y, si corresponde, lo envía a SUNAT.
      *
-     * @param  array{tipo_comprobante: string, serie: string, cliente_id?: int|null, items: array<int, array{producto_id: int, cantidad: float|string, precio_unitario?: float|string|null}>}  $datos
+     * @param  array{tipo_comprobante: string, serie: string, cliente_id?: int|null, metodo_pago?: string, user_id?: int|null, items: array<int, array{producto_id: int, cantidad: float|string, precio_unitario?: float|string|null}>}  $datos
      */
     public function emitir(array $datos): Comprobante
     {
@@ -37,6 +38,7 @@ class ComprobanteService
                 'cliente_id' => $cliente?->id,
                 'fecha_emision' => now(),
                 'moneda' => 'PEN',
+                'metodo_pago' => $datos['metodo_pago'] ?? 'efectivo',
                 'estado_sunat' => in_array($datos['tipo_comprobante'], [Comprobante::FACTURA, Comprobante::BOLETA], true)
                     ? 'pendiente' : 'no_aplica',
             ]);
@@ -90,6 +92,14 @@ class ComprobanteService
             }
 
             $comprobante->update(array_map(fn ($v) => round($v, 2), $totales));
+
+            Caja::abiertaDe($datos['user_id'] ?? null)?->movimientos()->create([
+                'tipo' => 'ingreso',
+                'concepto' => 'Venta '.$comprobante->numero(),
+                'monto' => $comprobante->total,
+                'metodo_pago' => $comprobante->metodo_pago,
+                'comprobante_id' => $comprobante->id,
+            ]);
 
             return $comprobante;
         });

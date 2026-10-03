@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\DashboardController;
@@ -21,6 +22,12 @@ Route::middleware('auth')->group(function () {
     Route::get('productos/{producto}/movimientos', [ProductoController::class, 'movimientos'])->name('productos.movimientos');
     Route::post('productos/{producto}/stock', [ProductoController::class, 'ajustarStock'])->name('productos.stock');
     Route::resource('productos', ProductoController::class)->except('show');
+
+    Route::get('caja', [CajaController::class, 'index'])->name('caja.index');
+    Route::post('caja/abrir', [CajaController::class, 'abrir'])->name('caja.abrir');
+    Route::post('caja/movimiento', [CajaController::class, 'movimiento'])->name('caja.movimiento');
+    Route::post('caja/cerrar', [CajaController::class, 'cerrar'])->name('caja.cerrar');
+    Route::get('caja/{caja}', [CajaController::class, 'show'])->name('caja.show');
 
     Route::resource('clientes', ClienteController::class)->except(['show', 'destroy']);
 

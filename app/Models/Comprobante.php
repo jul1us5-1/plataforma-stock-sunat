@@ -19,7 +19,7 @@ class Comprobante extends Model
     ];
 
     protected $fillable = [
-        'tipo_comprobante', 'serie', 'correlativo', 'cliente_id', 'fecha_emision', 'moneda',
+        'tipo_comprobante', 'serie', 'correlativo', 'cliente_id', 'fecha_emision', 'moneda', 'metodo_pago',
         'op_gravadas', 'op_exoneradas', 'op_inafectas', 'igv', 'total',
         'estado_sunat', 'sunat_codigo', 'sunat_mensaje', 'hash', 'xml_path', 'cdr_path',
     ];

@@ -2,11 +2,14 @@
 @section('titulo', 'Nueva venta')
 @section('contenido')
 <h1 class="text-xl font-semibold mb-4">Nueva venta</h1>
+@unless ($cajaAbierta)
+    <div class="mb-4 rounded bg-amber-100 border border-amber-300 px-4 py-2">No tienes una caja abierta, así que esta venta no quedará en ningún cierre. <a href="{{ route('caja.index') }}" class="underline">Abrir caja</a></div>
+@endunless
 <form method="POST" action="{{ route('comprobantes.store') }}"
       x-data="venta(@js($productos->map->only(['id', 'codigo', 'nombre', 'precio_venta', 'stock', 'unidad_medida'])), @js($series->map->only(['serie', 'tipo_comprobante'])))"
       class="space-y-4">
     @csrf
-    <div class="bg-white rounded-lg shadow p-4 grid sm:grid-cols-3 gap-4">
+    <div class="bg-white rounded-lg shadow p-4 grid sm:grid-cols-4 gap-4">
         <label class="block">Comprobante
             <select name="tipo_comprobante" x-model="tipo" class="w-full border rounded px-3 py-2">
                 @foreach (\App\Models\Comprobante::TIPOS as $k => $v)<option value="{{ $k }}">{{ $v }}</option>@endforeach
@@ -23,6 +26,11 @@
                 @foreach ($clientes as $c)<option value="{{ $c->id }}">{{ $c->numero_documento }} · {{ $c->razon_social }}</option>@endforeach
             </select>
             <a href="{{ route('clientes.create') }}" class="text-xs text-blue-700 hover:underline">+ nuevo cliente</a>
+        </label>
+        <label class="block">Pago
+            <select name="metodo_pago" class="w-full border rounded px-3 py-2">
+                @foreach (\App\Models\Caja::METODOS_PAGO as $k => $v)<option value="{{ $k }}">{{ $v }}</option>@endforeach
+            </select>
         </label>
     </div>
 

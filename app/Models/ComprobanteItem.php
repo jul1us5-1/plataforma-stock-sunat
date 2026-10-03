@@ -9,7 +9,7 @@ class ComprobanteItem extends Model
 {
     protected $fillable = [
         'comprobante_id', 'producto_id', 'codigo', 'descripcion', 'unidad_medida', 'afectacion_igv',
-        'cantidad', 'valor_unitario', 'precio_unitario', 'valor_venta', 'igv', 'total',
+        'cantidad', 'valor_unitario', 'precio_unitario', 'costo_unitario', 'valor_venta', 'igv', 'total',
     ];
 
     protected function casts(): array

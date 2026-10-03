@@ -13,6 +13,7 @@ Aplicación web en **Laravel** para:
 
 - PHP 8.3+ con extensiones `soap`, `openssl`, `dom`, `zip`, `mbstring`, `pdo_sqlite` (o `pdo_mysql`)
 - Composer
+- Node.js 20+ solo si vas a modificar el diseño (los estilos compilados ya vienen en `public/build`)
 
 ## Instalación local
 
@@ -50,6 +51,16 @@ En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.cs
 | descripcion | no | |
 
 Si el código ya existe, el producto se actualiza y el stock se ajusta al valor del archivo (queda registrado en el kardex).
+
+## Reportes
+
+- **Dashboard**: CPE emitidos, monto en comprobantes y en recibos, total general, utilidad, ventas por hora o por día, ventas por método de pago, productos más vendidos, stock bajo y comprobantes pendientes en SUNAT. Se puede filtrar por hoy, ayer, semana, mes, mes anterior o un rango de fechas.
+- **Reportes**: lo mismo con detalle por tipo de comprobante y por producto, inventario valorizado y exportación de ventas a CSV (se abre en Excel).
+- La utilidad usa el **costo de compra** de cada producto (sin IGV). Los productos sin costo registrado no suman a la utilidad.
+
+## Diseño
+
+Tailwind CSS, Alpine.js y Chart.js se compilan con Vite. Si cambias vistas o estilos, ejecuta `npm install && npm run build` y sube `public/build`.
 
 ## SUNAT
 

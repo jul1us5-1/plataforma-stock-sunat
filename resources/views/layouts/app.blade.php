@@ -4,32 +4,62 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('titulo', 'Inicio') · {{ config('app.name') }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen">
+<body class="bg-slate-100 text-slate-800 min-h-screen" x-data="{ menu: false }">
 @auth
-<nav class="bg-slate-900 text-white">
-    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center gap-1 py-2">
-        <a href="{{ route('dashboard') }}" class="font-semibold mr-4">{{ config('app.name') }}</a>
-        @foreach (['dashboard' => 'Inicio', 'productos.index' => 'Productos', 'clientes.index' => 'Clientes', 'comprobantes.index' => 'Comprobantes', 'caja.index' => 'Caja'] as $ruta => $texto)
-            <a href="{{ route($ruta) }}" class="px-3 py-1.5 rounded {{ request()->routeIs(str_replace('.index', '.*', $ruta)) ? 'bg-slate-700' : 'hover:bg-slate-800' }}">{{ $texto }}</a>
+@php
+    $secciones = [
+        ['dashboard', 'Dashboard', 'M3 12l9-9 9 9M5 10v10h14V10'],
+        ['comprobantes.create', 'Nueva venta', 'M12 4v16m8-8H4'],
+        ['comprobantes.index', 'Comprobantes', 'M7 3h10l4 4v14H3V3h4zm0 6h10M7 13h10M7 17h6'],
+        ['caja.index', 'Caja', 'M3 7h18v12H3zM3 11h18M7 15h2'],
+        ['productos.index', 'Productos', 'M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z'],
+        ['clientes.index', 'Clientes', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM4 21v-1a6 6 0 0112 0v1'],
+        ['reportes.index', 'Reportes', 'M4 20V10m6 10V4m6 16v-7m4 7H2'],
+    ];
+    // Una sección está activa en su ruta o en cualquier ruta hermana (productos.edit activa Productos), salvo "Nueva venta"
+    $activa = fn ($ruta) => request()->routeIs($ruta) || (! in_array($ruta, ['dashboard', 'comprobantes.create'])
+        && request()->routeIs(\Illuminate\Support\Str::beforeLast($ruta, '.').'.*') && ! request()->routeIs('comprobantes.create'));
+@endphp
+<div class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="menu" x-cloak @click="menu = false"></div>
+<aside class="fixed inset-y-0 left-0 z-40 w-60 bg-white border-r transform transition-transform lg:translate-x-0 print:hidden"
+       :class="menu ? 'translate-x-0' : '-translate-x-full'">
+    <div class="h-16 flex items-center px-5 font-semibold text-blue-700 border-b">{{ config('sunat.empresa.nombre_comercial') ?: config('app.name') }}</div>
+    <nav class="p-3 space-y-1">
+        @foreach ($secciones as [$ruta, $texto, $icono])
+            <a href="{{ route($ruta) }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm {{ $activa($ruta) ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icono }}"/></svg>
+                {{ $texto }}
+            </a>
         @endforeach
-        <a href="{{ route('comprobantes.create') }}" class="ml-auto bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded font-medium">+ Nueva venta</a>
-        <form method="POST" action="{{ route('logout') }}">@csrf<button class="px-3 py-1.5 text-slate-300 hover:text-white">Salir</button></form>
-    </div>
-</nav>
+    </nav>
+</aside>
+<header class="lg:pl-60 bg-white border-b h-16 flex items-center gap-2 px-4 print:hidden">
+    <button class="lg:hidden p-2 -ml-2" @click="menu = true" aria-label="Menú">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="{{ route('comprobantes.create') }}" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm px-3 py-1.5 rounded">+ Venta</a>
+    <a href="{{ route('caja.index') }}" class="border text-sm px-3 py-1.5 rounded hover:bg-slate-50">Caja</a>
+    <span class="ml-auto text-xs font-semibold px-2 py-1 rounded {{ config('sunat.entorno') === 'produccion' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
+        SUNAT {{ config('sunat.entorno') === 'produccion' ? 'PRODUCCIÓN' : strtoupper(config('sunat.entorno')) }}
+    </span>
+    <span class="hidden sm:block text-sm text-right leading-tight"><span class="font-medium">{{ auth()->user()->name }}</span><br><span class="text-slate-500 text-xs">{{ auth()->user()->email }}</span></span>
+    <form method="POST" action="{{ route('logout') }}">@csrf<button class="text-sm text-slate-500 hover:text-slate-900 px-2">Salir</button></form>
+</header>
 @endauth
-<main class="max-w-7xl mx-auto p-4">
-    @if (session('ok'))
-        <div class="mb-4 rounded bg-emerald-100 border border-emerald-300 px-4 py-2">{{ session('ok') }}</div>
-    @endif
-    @if ($errors->any())
-        <div class="mb-4 rounded bg-red-100 border border-red-300 px-4 py-2">
-            @foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach
-        </div>
-    @endif
-    @yield('contenido')
+<main class="@auth lg:pl-60 @endauth">
+    <div class="max-w-7xl mx-auto p-4">
+        @if (session('ok'))
+            <div class="mb-4 rounded bg-emerald-100 border border-emerald-300 px-4 py-2">{{ session('ok') }}</div>
+        @endif
+        @if ($errors->any())
+            <div class="mb-4 rounded bg-red-100 border border-red-300 px-4 py-2">
+                @foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach
+            </div>
+        @endif
+        @yield('contenido')
+    </div>
 </main>
 </body>
 </html>

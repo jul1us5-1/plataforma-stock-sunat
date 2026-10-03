@@ -23,6 +23,8 @@ class ImportadorProductos
         'producto' => 'nombre',
         'precio' => 'precio_venta',
         'precio venta' => 'precio_venta',
+        'precio compra' => 'precio_compra',
+        'costo' => 'precio_compra',
         'precio unitario' => 'precio_venta',
         'unidad de medida' => 'unidad_medida',
         'unidad' => 'unidad_medida',
@@ -97,6 +99,7 @@ class ImportadorProductos
             $producto->fill(array_filter([
                 'nombre' => Str::limit($nombre, 255, ''),
                 'precio_venta' => $precio,
+                'precio_compra' => $this->numero($datos['precio_compra'] ?? null),
                 'descripcion' => ($datos['nombre'] ?? '') !== '' ? ($datos['descripcion'] ?? null) : null,
                 'categoria' => $datos['categoria'] ?? null,
                 'unidad_medida' => strtoupper($datos['unidad_medida'] ?? '') ?: null,

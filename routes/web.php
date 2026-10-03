@@ -6,6 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ReporteController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -28,6 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::post('caja/movimiento', [CajaController::class, 'movimiento'])->name('caja.movimiento');
     Route::post('caja/cerrar', [CajaController::class, 'cerrar'])->name('caja.cerrar');
     Route::get('caja/{caja}', [CajaController::class, 'show'])->name('caja.show');
+
+    Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('reportes/ventas.csv', [ReporteController::class, 'exportarVentas'])->name('reportes.ventas');
 
     Route::resource('clientes', ClienteController::class)->except(['show', 'destroy']);
 

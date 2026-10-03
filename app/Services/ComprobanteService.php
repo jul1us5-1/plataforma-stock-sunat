@@ -66,6 +66,7 @@ class ComprobanteService
                     'afectacion_igv' => $producto->afectacion_igv,
                     'cantidad' => $cantidad,
                     'precio_unitario' => $precio,
+                    'costo_unitario' => $producto->precio_compra,
                     ...$item,
                 ]);
 

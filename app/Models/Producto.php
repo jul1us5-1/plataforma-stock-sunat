@@ -12,13 +12,14 @@ class Producto extends Model
 
     protected $fillable = [
         'codigo', 'nombre', 'descripcion', 'categoria', 'unidad_medida',
-        'precio_venta', 'afectacion_igv', 'stock', 'stock_minimo', 'activo',
+        'precio_venta', 'precio_compra', 'afectacion_igv', 'stock', 'stock_minimo', 'activo',
     ];
 
     protected function casts(): array
     {
         return [
             'precio_venta' => 'decimal:2',
+            'precio_compra' => 'decimal:2',
             'stock' => 'decimal:2',
             'stock_minimo' => 'decimal:2',
             'activo' => 'boolean',

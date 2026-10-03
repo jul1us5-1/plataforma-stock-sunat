@@ -8,6 +8,7 @@
     <label class="block">Nombre<input name="nombre" value="{{ old('nombre', $producto->nombre) }}" required class="w-full border rounded px-3 py-2"></label>
     <label class="block">Categoría<input name="categoria" value="{{ old('categoria', $producto->categoria) }}" class="w-full border rounded px-3 py-2"></label>
     <label class="block">Precio de venta (IGV incluido)<input name="precio_venta" type="number" step="0.01" min="0" value="{{ old('precio_venta', $producto->precio_venta) }}" required class="w-full border rounded px-3 py-2"></label>
+    <label class="block">Costo de compra (opcional)<input name="precio_compra" type="number" step="0.01" min="0" value="{{ old('precio_compra', $producto->precio_compra) }}" class="w-full border rounded px-3 py-2"></label>
     <label class="block">Unidad
         <select name="unidad_medida" class="w-full border rounded px-3 py-2">
             @foreach (['NIU' => 'Unidad', 'ZZ' => 'Servicio', 'KGM' => 'Kilogramo', 'LTR' => 'Litro', 'MTR' => 'Metro', 'BX' => 'Caja', 'DZN' => 'Docena'] as $k => $v)

@@ -111,6 +111,7 @@ class ProductoController extends Controller
             'categoria' => ['nullable', 'string', 'max:100'],
             'unidad_medida' => ['required', Rule::in(['NIU', 'ZZ', 'KGM', 'LTR', 'MTR', 'BX', 'DZN'])],
             'precio_venta' => ['required', 'numeric', 'min:0'],
+            'precio_compra' => ['nullable', 'numeric', 'min:0'],
             'afectacion_igv' => ['required', Rule::in(['10', '20', '30'])],
             'stock' => ['nullable', 'numeric'],
             'stock_minimo' => ['nullable', 'numeric', 'min:0'],

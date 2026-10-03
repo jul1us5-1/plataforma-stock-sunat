@@ -86,6 +86,7 @@ class SunatService
             ->setValorVenta($valorVenta)
             ->setSubTotal((float) $comprobante->total)
             ->setMtoImpVenta((float) $comprobante->total)
+            ->setObservacion($comprobante->observaciones)
             ->setDetails($detalles)
             ->setLegends([(new Legend)->setCode('1000')->setValue(NumeroALetras::convertir((float) $comprobante->total))]);
     }

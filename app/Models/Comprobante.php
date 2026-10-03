@@ -19,7 +19,7 @@ class Comprobante extends Model
     ];
 
     protected $fillable = [
-        'tipo_comprobante', 'serie', 'correlativo', 'cliente_id', 'fecha_emision', 'moneda', 'metodo_pago',
+        'tipo_comprobante', 'serie', 'correlativo', 'cliente_id', 'user_id', 'observaciones', 'fecha_emision', 'moneda', 'metodo_pago',
         'op_gravadas', 'op_exoneradas', 'op_inafectas', 'igv', 'total',
         'estado_sunat', 'sunat_codigo', 'sunat_mensaje', 'hash', 'xml_path', 'cdr_path',
     ];
@@ -39,6 +39,11 @@ class Comprobante extends Model
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    public function vendedor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function items(): HasMany

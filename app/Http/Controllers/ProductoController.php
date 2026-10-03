@@ -13,15 +13,27 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $productos = Producto::query()
-            ->when($request->q, fn ($q, $texto) => $q->where(fn ($q) => $q
-                ->where('nombre', 'like', "%{$texto}%")
-                ->orWhere('codigo', 'like', "%{$texto}%")))
+            ->when($request->q, fn ($q, $texto) => $q->where($request->campo === 'codigo' ? 'codigo' : 'nombre', 'like', "%{$texto}%"))
             ->when($request->boolean('stock_bajo'), fn ($q) => $q->whereColumn('stock', '<=', 'stock_minimo')->where('unidad_medida', '!=', 'ZZ'))
-            ->orderBy('nombre')
+            ->orderByRaw('LOWER(nombre)')
             ->paginate(25)
             ->withQueryString();
 
         return view('productos.index', compact('productos'));
+    }
+
+    public function exportar()
+    {
+        return response()->streamDownload(function () {
+            $salida = fopen('php://output', 'w');
+            fwrite($salida, "\xEF\xBB\xBF"); // BOM para que Excel lea las tildes
+            $columnas = ['codigo', 'nombre', 'precio_venta', 'precio_compra', 'stock', 'stock_minimo', 'categoria', 'unidad_medida', 'afectacion_igv', 'descripcion'];
+            fputcsv($salida, $columnas, ';', '"', '');
+            foreach (Producto::orderBy('nombre')->lazy() as $producto) {
+                fputcsv($salida, array_map(fn ($c) => $producto->getRawOriginal($c), $columnas), ';', '"', '');
+            }
+            fclose($salida);
+        }, 'productos_'.now()->format('Ymd').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     public function create()

@@ -26,6 +26,7 @@
     <div class="text-sm mb-4 grid grid-cols-2 gap-1">
         <div><strong>Cliente:</strong> {{ $comprobante->cliente?->razon_social ?? 'Clientes varios' }}</div>
         <div><strong>Fecha:</strong> {{ $comprobante->fecha_emision->format('d/m/Y H:i') }}</div>
+        @if ($comprobante->vendedor)<div><strong>Vendedor:</strong> {{ $comprobante->vendedor->name }}</div>@endif
         <div><strong>Pago:</strong> {{ \App\Models\Caja::METODOS_PAGO[$comprobante->metodo_pago] ?? $comprobante->metodo_pago }}</div>
         @if ($comprobante->cliente)<div><strong>Documento:</strong> {{ $comprobante->cliente->numero_documento }}</div>@endif
         @if ($comprobante->cliente?->direccion)<div><strong>Dirección:</strong> {{ $comprobante->cliente->direccion }}</div>@endif
@@ -45,6 +46,7 @@
         <div class="flex justify-between"><span>IGV 18%</span><span>S/ {{ number_format($comprobante->igv, 2) }}</span></div>
         <div class="flex justify-between font-semibold text-base border-t pt-1"><span>Total</span><span>S/ {{ number_format($comprobante->total, 2) }}</span></div>
     </div>
+    @if ($comprobante->observaciones)<p class="text-sm mt-4"><strong>Observaciones:</strong> {{ $comprobante->observaciones }}</p>@endif
     <p class="text-sm mt-4">SON: {{ \App\Support\NumeroALetras::convertir((float) $comprobante->total) }}</p>
     @if ($comprobante->hash)<p class="text-xs text-slate-500 mt-2">Hash: {{ $comprobante->hash }}</p>@endif
     <div class="mt-4 text-sm print:hidden">

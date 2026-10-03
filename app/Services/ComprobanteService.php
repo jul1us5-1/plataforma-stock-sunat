@@ -36,6 +36,8 @@ class ComprobanteService
                 'serie' => $serie->serie,
                 'correlativo' => Serie::siguienteCorrelativo($serie->serie),
                 'cliente_id' => $cliente?->id,
+                'user_id' => $datos['user_id'] ?? null,
+                'observaciones' => $datos['observaciones'] ?? null,
                 'fecha_emision' => now(),
                 'moneda' => 'PEN',
                 'metodo_pago' => $datos['metodo_pago'] ?? 'efectivo',

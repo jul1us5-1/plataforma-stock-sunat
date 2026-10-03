@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Producto;
+use App\Models\User;
 use App\Services\ImportadorProductos;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -42,5 +43,21 @@ class ImportarProductosTest extends TestCase
         // Reimportar no duplica
         $this->assertSame(566, app(ImportadorProductos::class)->importar(database_path('data/productos_mypefact.xlsx'))['actualizados']);
         $this->assertSame(566, Producto::count());
+    }
+
+    public function test_exportar_y_volver_a_importar(): void
+    {
+        Producto::factory()->create(['codigo' => 'X9', 'nombre' => 'Muñequera', 'precio_venta' => 22.5, 'precio_compra' => 10, 'stock' => 7]);
+        $csv = $this->actingAs(User::factory()->create())->get(route('productos.exportar'))->assertOk()->streamedContent();
+        $this->assertStringContainsString('X9;Muñequera;22.5;10;7', $csv);
+
+        Producto::query()->delete();
+        $ruta = tempnam(sys_get_temp_dir(), 'csv');
+        file_put_contents($ruta, $csv);
+        app(ImportadorProductos::class)->importar($ruta);
+
+        $producto = Producto::where('codigo', 'X9')->first();
+        $this->assertEquals(10, $producto->precio_compra);
+        $this->assertEquals(7, $producto->stock);
     }
 }

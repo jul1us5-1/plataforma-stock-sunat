@@ -19,6 +19,7 @@ Route::post('logout', [AuthController::class, 'destroy'])->middleware('auth')->n
 Route::middleware('auth')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
 
+    Route::get('productos/exportar', [ProductoController::class, 'exportar'])->name('productos.exportar');
     Route::post('productos/importar', [ProductoController::class, 'importar'])->name('productos.importar');
     Route::get('productos/{producto}/movimientos', [ProductoController::class, 'movimientos'])->name('productos.movimientos');
     Route::post('productos/{producto}/stock', [ProductoController::class, 'ajustarStock'])->name('productos.stock');

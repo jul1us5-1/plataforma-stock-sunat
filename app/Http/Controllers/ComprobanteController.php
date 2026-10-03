@@ -31,8 +31,8 @@ class ComprobanteController extends Controller
     {
         return view('comprobantes.create', [
             'series' => Serie::where('activo', true)->orderBy('serie')->get(),
-            'clientes' => Cliente::orderBy('razon_social')->get(),
-            'productos' => Producto::where('activo', true)->orderBy('nombre')->get(),
+            'clientes' => Cliente::orderBy('razon_social')->get(['id', 'tipo_documento', 'numero_documento', 'razon_social']),
+            'productos' => Producto::where('activo', true)->orderByRaw('LOWER(nombre)')->get(),
             'cajaAbierta' => Caja::abiertaDe(auth()->id()),
         ]);
     }
@@ -43,6 +43,7 @@ class ComprobanteController extends Controller
             'tipo_comprobante' => ['required', Rule::in(array_keys(Comprobante::TIPOS))],
             'serie' => ['required', 'exists:series,serie'],
             'cliente_id' => ['nullable', 'exists:clientes,id'],
+            'observaciones' => ['nullable', 'string', 'max:500'],
             'metodo_pago' => ['required', Rule::in(array_keys(Caja::METODOS_PAGO))],
             'items' => ['required', 'array', 'min:1'],
             'items.*.producto_id' => ['required', 'exists:productos,id'],
@@ -57,7 +58,7 @@ class ComprobanteController extends Controller
 
     public function show(Comprobante $comprobante)
     {
-        $comprobante->load(['items', 'cliente']);
+        $comprobante->load(['items', 'cliente', 'vendedor']);
 
         return view('comprobantes.show', compact('comprobante'));
     }

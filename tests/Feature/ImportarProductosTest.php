@@ -26,4 +26,21 @@ class ImportarProductosTest extends TestCase
         $this->assertEquals(10, Producto::where('codigo', 'A1')->first()->stock);
         $this->assertDatabaseHas('movimientos_stock', ['cantidad' => 7, 'tipo' => 'ajuste']);
     }
+
+    public function test_importa_reporte_de_mypefact(): void
+    {
+        $resultado = app(ImportadorProductos::class)->importar(database_path('data/productos_mypefact.xlsx'));
+
+        $this->assertSame(566, $resultado['creados']);
+        $this->assertSame([], $resultado['errores']);
+        $rodillera = Producto::where('codigo', '00003')->first();
+        $this->assertSame('Rodillera con abertura S', $rodillera->nombre);
+        $this->assertEquals(30, $rodillera->precio_venta);
+        $this->assertSame('10', $rodillera->afectacion_igv);
+        $this->assertNotNull(Producto::where('codigo', '100568')->first());
+
+        // Reimportar no duplica
+        $this->assertSame(566, app(ImportadorProductos::class)->importar(database_path('data/productos_mypefact.xlsx'))['actualizados']);
+        $this->assertSame(566, Producto::count());
+    }
 }

@@ -11,10 +11,10 @@
     <a href="{{ route('productos.create') }}" class="bg-slate-900 text-white rounded px-3 py-1.5">+ Producto</a>
 </div>
 <details class="mb-4 bg-white rounded-lg shadow p-4">
-    <summary class="cursor-pointer font-medium">Importar productos desde CSV</summary>
-    <p class="text-sm text-slate-600 my-2">Columnas: <code>codigo, nombre, precio_venta, stock</code> y opcionales <code>stock_minimo, categoria, unidad_medida, afectacion_igv, descripcion</code>. Si el código ya existe se actualiza.</p>
+    <summary class="cursor-pointer font-medium">Importar productos desde Excel o CSV</summary>
+    <p class="text-sm text-slate-600 my-2">Columnas: <code>codigo, nombre, precio_venta, stock</code> y opcionales <code>stock_minimo, categoria, unidad_medida, afectacion_igv, descripcion</code>. Si el código ya existe se actualiza. También acepta tal cual el reporte de productos exportado de MYPEFACT.</p>
     <form method="POST" action="{{ route('productos.importar') }}" enctype="multipart/form-data" class="flex gap-2">
-        @csrf <input type="file" name="archivo" accept=".csv,.txt" required> <button class="bg-slate-900 text-white rounded px-3 py-1.5">Importar</button>
+        @csrf <input type="file" name="archivo" accept=".xlsx,.csv,.txt" required> <button class="bg-slate-900 text-white rounded px-3 py-1.5">Importar</button>
     </form>
 </details>
 <div class="bg-white rounded-lg shadow overflow-x-auto">

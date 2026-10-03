@@ -93,8 +93,9 @@ class ProductoController extends Controller
 
     public function importar(Request $request, ImportadorProductos $importador)
     {
-        $request->validate(['archivo' => ['required', 'file', 'mimes:csv,txt']]);
-        $resultado = $importador->importar($request->file('archivo')->getRealPath());
+        $request->validate(['archivo' => ['required', 'file', 'extensions:csv,txt,xlsx']]);
+        $archivo = $request->file('archivo');
+        $resultado = $importador->importar($archivo->getRealPath(), $archivo->getClientOriginalName());
 
         return redirect()->route('productos.index')->with('ok',
             "Importación lista: {$resultado['creados']} creados, {$resultado['actualizados']} actualizados."

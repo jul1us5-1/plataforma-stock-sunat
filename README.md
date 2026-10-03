@@ -31,7 +31,11 @@ El seeder crea las series `F001` (facturas), `B001` (boletas) y `R001` (recibos 
 
 ## Importar productos
 
-En **Productos → Importar productos desde CSV** sube un archivo con encabezados. Separador `,` o `;`.
+El seeder (`php artisan migrate --seed`) ya carga los **566 productos** de `database/data/productos_mypefact.xlsx` (exportados de MYPEFACT). Ese reporte no trae stock, así que todos empiezan en 0.
+
+Para reimportar o cargar otro archivo: `php artisan productos:importar ruta/al/archivo.xlsx` o desde la pantalla de Productos.
+
+En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.csv` con encabezados (separador `,` o `;`). El reporte de productos de MYPEFACT se acepta tal cual.
 
 | columna | obligatoria | ejemplo |
 |---|---|---|

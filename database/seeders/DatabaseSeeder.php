@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Serie;
 use App\Models\User;
+use App\Services\ImportadorProductos;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,6 +18,12 @@ class DatabaseSeeder extends Seeder
 
         foreach ([['01', 'F001'], ['03', 'B001'], ['RI', 'R001']] as [$tipo, $serie]) {
             Serie::firstOrCreate(['serie' => $serie], ['tipo_comprobante' => $tipo]);
+        }
+
+        // Catálogo de productos exportado de MYPEFACT
+        $catalogo = database_path('data/productos_mypefact.xlsx');
+        if (! app()->runningUnitTests() && is_file($catalogo)) {
+            app(ImportadorProductos::class)->importar($catalogo);
         }
     }
 }

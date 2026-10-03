@@ -15,7 +15,7 @@
             <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 text-sm">
                 <label class="block text-blue-700">Tipo comprobante
                     <select name="tipo_comprobante" x-model="tipo" class="mt-1 w-full border rounded px-3 py-2 text-slate-800">
-                        @foreach (\App\Models\Comprobante::TIPOS as $k => $v)<option value="{{ $k }}">{{ $v }}</option>@endforeach
+                        @foreach (\App\Models\Comprobante::TIPOS_VENTA as $k)<option value="{{ $k }}">{{ \App\Models\Comprobante::TIPOS[$k] }}</option>@endforeach
                     </select>
                 </label>
                 <label class="block text-blue-700">Serie

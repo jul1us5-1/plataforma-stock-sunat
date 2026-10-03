@@ -56,6 +56,10 @@
         @if ($c->cliente->direccion)<tr><td class="et">Dirección</td><td>: {{ $c->cliente->direccion }}</td></tr>@endif
     @endif
     <tr><td class="et">Moneda</td><td>: Soles</td></tr>
+    @if ($c->esNotaCredito() && $c->referencia)
+        <tr><td class="et">Documento que modifica</td><td>: {{ mb_strtoupper($c->referencia->nombreTipo()) }} {{ $c->referencia->numero() }}</td></tr>
+        <tr><td class="et">Motivo</td><td>: {{ $c->motivo_codigo }} - {{ $c->motivo_descripcion }}</td></tr>
+    @endif
 </table>
 
 <table class="items">

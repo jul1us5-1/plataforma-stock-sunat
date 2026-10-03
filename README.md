@@ -52,6 +52,11 @@ En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.cs
 
 Si el código ya existe, el producto se actualiza y el stock se ajusta al valor del archivo (queda registrado en el kardex).
 
+## Notas de crédito y anulaciones
+
+- Desde el detalle de una factura o boleta **aceptada por SUNAT** se emite una **nota de crédito** (series `FC01` para facturas y `BC01` para boletas) con motivo 01 anulación, 06 devolución total o 07 devolución por ítem. Los productos vuelven al stock, el dinero sale de la caja abierta y los reportes restan la nota.
+- Los **recibos internos** se anulan directamente (no van a SUNAT), devolviendo stock y dinero.
+
 ## Impresión y envío al cliente
 
 Cada comprobante tiene **PDF A4** y **ticket de 80 mm**, con el código QR de SUNAT, el hash, el importe en letras y la leyenda de representación impresa. El botón **WhatsApp** abre un mensaje con un enlace firmado al PDF; el cliente puede verlo sin iniciar sesión, pero el enlace no se puede adivinar ni modificar. Para poner tu logo, usa `SUNAT_LOGO=/ruta/al/logo.png`.
@@ -92,7 +97,7 @@ php artisan test
 
 ## Pendiente
 
-- Notas de crédito/débito y comunicación de baja (anulaciones).
+- Notas de débito y comunicación de baja.
 - Resumen diario de boletas.
 - Consulta de RUC/DNI.
 - Despliegue en servidor.

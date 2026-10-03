@@ -3,6 +3,14 @@
 @section('contenido')
 <div class="flex flex-wrap items-center gap-2 mb-4 print:hidden">
     <a href="{{ route('comprobantes.index') }}" class="text-blue-700 hover:underline mr-auto">← Comprobantes</a>
+    @if ($comprobante->anulable() && $comprobante->tipo_comprobante !== \App\Models\Comprobante::RECIBO)
+        <a href="{{ route('comprobantes.nota-credito', $comprobante) }}" class="border border-red-300 text-red-700 bg-white rounded px-3 py-1.5">Nota de crédito</a>
+    @endif
+    @if ($comprobante->anulable() && $comprobante->tipo_comprobante === \App\Models\Comprobante::RECIBO)
+        <form method="POST" action="{{ route('comprobantes.anular', $comprobante) }}" x-data @submit="if (! ($el.motivo.value = prompt('Motivo de la anulación'))) $event.preventDefault()">
+            @csrf <input type="hidden" name="motivo"><button class="border border-red-300 text-red-700 bg-white rounded px-3 py-1.5">Anular recibo</button>
+        </form>
+    @endif
     @if ($comprobante->xml_path)<a href="{{ route('comprobantes.descargar', [$comprobante, 'xml']) }}" class="border bg-white rounded px-3 py-1.5">XML</a>@endif
     @if ($comprobante->cdr_path)<a href="{{ route('comprobantes.descargar', [$comprobante, 'cdr']) }}" class="border bg-white rounded px-3 py-1.5">CDR</a>@endif
     @if ($comprobante->seEnviaASunat() && in_array($comprobante->estado_sunat, ['pendiente', 'error']))
@@ -32,6 +40,23 @@
             <div class="font-mono">{{ $comprobante->numero() }}</div>
         </div>
     </div>
+    @if ($comprobante->esNotaCredito() && $comprobante->referencia)
+        <div class="text-sm mb-4 rounded bg-slate-50 p-2">
+            <strong>Documento que modifica:</strong> <a href="{{ route('comprobantes.show', $comprobante->referencia) }}" class="text-blue-700 hover:underline">{{ $comprobante->referencia->nombreTipo() }} {{ $comprobante->referencia->numero() }}</a><br>
+            <strong>Motivo:</strong> {{ $comprobante->motivo_codigo }} - {{ \App\Models\Comprobante::MOTIVOS_NC[$comprobante->motivo_codigo] ?? '' }}: {{ $comprobante->motivo_descripcion }}
+        </div>
+    @endif
+    @if ($comprobante->notasCredito->isNotEmpty())
+        <div class="text-sm mb-4 rounded bg-red-50 border border-red-200 p-2">
+            <strong>Notas de crédito:</strong>
+            @foreach ($comprobante->notasCredito as $nc)
+                <a href="{{ route('comprobantes.show', $nc) }}" class="text-blue-700 hover:underline">{{ $nc->numero() }}</a> (S/ {{ number_format($nc->total, 2) }}, {{ $nc->estado_sunat }})@if (! $loop->last), @endif
+            @endforeach
+        </div>
+    @endif
+    @if ($comprobante->estado_sunat === 'anulado' && $comprobante->motivo_descripcion)
+        <div class="text-sm mb-4 rounded bg-red-50 border border-red-200 p-2"><strong>Anulado:</strong> {{ $comprobante->motivo_descripcion }}</div>
+    @endif
     <div class="text-sm mb-4 grid grid-cols-2 gap-1">
         <div><strong>Cliente:</strong> {{ $comprobante->cliente?->razon_social ?? 'Clientes varios' }}</div>
         <div><strong>Fecha:</strong> {{ $comprobante->fecha_emision->format('d/m/Y H:i') }}</div>

@@ -28,6 +28,10 @@
 <div>Cliente: {{ $c->cliente?->razon_social ?? 'Clientes varios' }}</div>
 @if ($c->cliente)<div>{{ \App\Models\Cliente::TIPOS_DOCUMENTO[$c->cliente->tipo_documento] ?? 'Doc.' }}: {{ $c->cliente->numero_documento }}</div>@endif
 @if ($c->cliente?->direccion)<div>Dir.: {{ $c->cliente->direccion }}</div>@endif
+@if ($c->esNotaCredito() && $c->referencia)
+    <div>Modifica: {{ $c->referencia->numero() }}</div>
+    <div>Motivo: {{ $c->motivo_codigo }} - {{ $c->motivo_descripcion }}</div>
+@endif
 <hr>
 <table>
     @foreach ($c->items as $item)

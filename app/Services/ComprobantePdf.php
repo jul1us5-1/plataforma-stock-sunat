@@ -18,7 +18,7 @@ class ComprobantePdf
 
     public function generar(Comprobante $comprobante, string $formato = 'a4'): \Barryvdh\DomPDF\PDF
     {
-        $comprobante->loadMissing(['items', 'cliente', 'vendedor']);
+        $comprobante->loadMissing(['items', 'cliente', 'vendedor', 'referencia']);
 
         $datos = [
             'c' => $comprobante,

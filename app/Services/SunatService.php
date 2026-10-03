@@ -11,6 +11,7 @@ use Greenter\Model\Response\BillResult;
 use Greenter\Model\Sale\FormaPagos\FormaPagoContado;
 use Greenter\Model\Sale\Invoice;
 use Greenter\Model\Sale\Legend;
+use Greenter\Model\Sale\Note;
 use Greenter\Model\Sale\SaleDetail;
 use Greenter\See;
 use Greenter\Ws\Services\SunatEndpoints;
@@ -20,11 +21,11 @@ use Throwable;
 class SunatService
 {
     /**
-     * Construye el documento UBL 2.1 de Greenter a partir de un comprobante.
+     * Construye el documento UBL 2.1 de Greenter: Invoice para facturas y boletas, Note para notas de crédito.
      */
-    public function construirDocumento(Comprobante $comprobante): Invoice
+    public function construirDocumento(Comprobante $comprobante): Invoice|Note
     {
-        $comprobante->loadMissing(['items', 'cliente']);
+        $comprobante->loadMissing(['items', 'cliente', 'referencia']);
         $empresa = config('sunat.empresa');
         $tasaIgv = (float) config('sunat.igv') * 100;
 
@@ -67,14 +68,29 @@ class SunatService
 
         $valorVenta = (float) $comprobante->op_gravadas + (float) $comprobante->op_exoneradas + (float) $comprobante->op_inafectas;
 
-        return (new Invoice)
+        if ($comprobante->esNotaCredito()) {
+            $documento = (new Note)
+                ->setCodMotivo($comprobante->motivo_codigo)
+                ->setDesMotivo($comprobante->motivo_descripcion)
+                ->setTipDocAfectado($comprobante->referencia->tipo_comprobante)
+                ->setNumDocfectado($comprobante->referencia->serie.'-'.$comprobante->referencia->correlativo)
+                ->setValorVenta($valorVenta)
+                ->setSubTotal((float) $comprobante->total);
+        } else {
+            $documento = (new Invoice)
+                ->setTipoOperacion('0101')
+                ->setFormaPago(new FormaPagoContado)
+                ->setObservacion($comprobante->observaciones)
+                ->setValorVenta($valorVenta)
+                ->setSubTotal((float) $comprobante->total);
+        }
+
+        return $documento
             ->setUblVersion('2.1')
-            ->setTipoOperacion('0101')
             ->setTipoDoc($comprobante->tipo_comprobante)
             ->setSerie($comprobante->serie)
             ->setCorrelativo((string) $comprobante->correlativo)
             ->setFechaEmision($comprobante->fecha_emision)
-            ->setFormaPago(new FormaPagoContado)
             ->setTipoMoneda($comprobante->moneda)
             ->setCompany($company)
             ->setClient($client)
@@ -83,10 +99,7 @@ class SunatService
             ->setMtoOperInafectas((float) $comprobante->op_inafectas)
             ->setMtoIGV((float) $comprobante->igv)
             ->setTotalImpuestos((float) $comprobante->igv)
-            ->setValorVenta($valorVenta)
-            ->setSubTotal((float) $comprobante->total)
             ->setMtoImpVenta((float) $comprobante->total)
-            ->setObservacion($comprobante->observaciones)
             ->setDetails($detalles)
             ->setLegends([(new Legend)->setCode('1000')->setValue(NumeroALetras::convertir((float) $comprobante->total))]);
     }

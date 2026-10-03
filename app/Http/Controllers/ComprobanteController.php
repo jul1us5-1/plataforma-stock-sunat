@@ -9,6 +9,7 @@ use App\Models\Producto;
 use App\Models\Serie;
 use App\Services\ComprobantePdf;
 use App\Services\ComprobanteService;
+use App\Services\NotaCreditoService;
 use App\Services\SunatService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +32,7 @@ class ComprobanteController extends Controller
     public function create()
     {
         return view('comprobantes.create', [
-            'series' => Serie::where('activo', true)->orderBy('serie')->get(),
+            'series' => Serie::where('activo', true)->whereIn('tipo_comprobante', Comprobante::TIPOS_VENTA)->orderBy('serie')->get(),
             'clientes' => Cliente::orderBy('razon_social')->get(['id', 'tipo_documento', 'numero_documento', 'razon_social']),
             'productos' => Producto::where('activo', true)->orderByRaw('LOWER(nombre)')->get(),
             'cajaAbierta' => Caja::abiertaDe(auth()->id()),
@@ -41,7 +42,7 @@ class ComprobanteController extends Controller
     public function store(Request $request, ComprobanteService $servicio)
     {
         $datos = $request->validate([
-            'tipo_comprobante' => ['required', Rule::in(array_keys(Comprobante::TIPOS))],
+            'tipo_comprobante' => ['required', Rule::in(Comprobante::TIPOS_VENTA)],
             'serie' => ['required', 'exists:series,serie'],
             'cliente_id' => ['nullable', 'exists:clientes,id'],
             'observaciones' => ['nullable', 'string', 'max:500'],
@@ -59,9 +60,42 @@ class ComprobanteController extends Controller
 
     public function show(Comprobante $comprobante)
     {
-        $comprobante->load(['items', 'cliente', 'vendedor']);
+        $comprobante->load(['items', 'cliente', 'vendedor', 'referencia', 'notasCredito']);
 
         return view('comprobantes.show', compact('comprobante'));
+    }
+
+    public function notaCredito(Comprobante $comprobante)
+    {
+        abort_unless($comprobante->anulable() && $comprobante->tipo_comprobante !== Comprobante::RECIBO, 404);
+        $comprobante->load('items');
+
+        return view('comprobantes.nota-credito', [
+            'comprobante' => $comprobante,
+            'devolvibles' => $comprobante->cantidadesDevolvibles(),
+        ]);
+    }
+
+    public function emitirNotaCredito(Request $request, Comprobante $comprobante, NotaCreditoService $servicio)
+    {
+        $datos = $request->validate([
+            'motivo_codigo' => ['required', Rule::in(array_keys(Comprobante::MOTIVOS_NC))],
+            'motivo_descripcion' => ['required', 'string', 'max:250'],
+            'cantidades' => ['array'],
+            'cantidades.*' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $nota = $servicio->emitir($comprobante, $datos['motivo_codigo'], $datos['motivo_descripcion'], $datos['cantidades'] ?? [], $request->user()->id);
+
+        return redirect()->route('comprobantes.show', $nota)->with('ok', "Nota de crédito {$nota->numero()} emitida.");
+    }
+
+    public function anular(Request $request, Comprobante $comprobante, NotaCreditoService $servicio)
+    {
+        $datos = $request->validate(['motivo' => ['required', 'string', 'max:250']]);
+        $servicio->anularRecibo($comprobante, $datos['motivo'], $request->user()->id);
+
+        return back()->with('ok', "Recibo {$comprobante->numero()} anulado. El stock fue devuelto.");
     }
 
     public function reenviar(Comprobante $comprobante, SunatService $sunat)

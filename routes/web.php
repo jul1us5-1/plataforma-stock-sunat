@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('clientes', ClienteController::class)->except(['show', 'destroy']);
 
     Route::resource('comprobantes', ComprobanteController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('comprobantes/{comprobante}/nota-credito', [ComprobanteController::class, 'notaCredito'])->name('comprobantes.nota-credito');
+    Route::post('comprobantes/{comprobante}/nota-credito', [ComprobanteController::class, 'emitirNotaCredito']);
+    Route::post('comprobantes/{comprobante}/anular', [ComprobanteController::class, 'anular'])->name('comprobantes.anular');
     Route::post('comprobantes/{comprobante}/reenviar', [ComprobanteController::class, 'reenviar'])->name('comprobantes.reenviar');
     Route::get('comprobantes/{comprobante}/pdf/{formato}', [ComprobanteController::class, 'pdf'])
         ->whereIn('formato', ComprobantePdf::FORMATOS)->name('comprobantes.pdf');

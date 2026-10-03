@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Administrador', 'password' => env('ADMIN_PASSWORD', 'cambiar-esta-clave')],
         );
 
-        foreach ([['01', 'F001'], ['03', 'B001'], ['RI', 'R001']] as [$tipo, $serie]) {
+        // FC01 y BC01: notas de crédito de facturas y de boletas
+        foreach ([['01', 'F001'], ['03', 'B001'], ['RI', 'R001'], ['07', 'FC01'], ['07', 'BC01']] as [$tipo, $serie]) {
             Serie::firstOrCreate(['serie' => $serie], ['tipo_comprobante' => $tipo]);
         }
 

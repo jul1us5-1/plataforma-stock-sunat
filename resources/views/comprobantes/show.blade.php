@@ -3,6 +3,7 @@
 @section('contenido')
 <div class="flex flex-wrap items-center gap-2 mb-4 print:hidden">
     <a href="{{ route('comprobantes.index') }}" class="text-blue-700 hover:underline mr-auto">← Comprobantes</a>
+    @can('admin')
     @if ($comprobante->anulable() && $comprobante->tipo_comprobante !== \App\Models\Comprobante::RECIBO)
         <a href="{{ route('comprobantes.nota-credito', $comprobante) }}" class="border border-red-300 text-red-700 bg-white rounded px-3 py-1.5">Nota de crédito</a>
     @endif
@@ -11,6 +12,7 @@
             @csrf <input type="hidden" name="motivo"><button class="border border-red-300 text-red-700 bg-white rounded px-3 py-1.5">Anular recibo</button>
         </form>
     @endif
+    @endcan
     @if ($comprobante->xml_path)<a href="{{ route('comprobantes.descargar', [$comprobante, 'xml']) }}" class="border bg-white rounded px-3 py-1.5">XML</a>@endif
     @if ($comprobante->cdr_path)<a href="{{ route('comprobantes.descargar', [$comprobante, 'cdr']) }}" class="border bg-white rounded px-3 py-1.5">CDR</a>@endif
     @if ($comprobante->seEnviaASunat() && in_array($comprobante->estado_sunat, ['pendiente', 'error']))

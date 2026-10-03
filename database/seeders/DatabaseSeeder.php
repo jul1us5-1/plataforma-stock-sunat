@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         User::firstOrCreate(
             ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
-            ['name' => 'Administrador', 'password' => env('ADMIN_PASSWORD', 'cambiar-esta-clave')],
+            ['name' => 'Administrador', 'password' => env('ADMIN_PASSWORD', 'cambiar-esta-clave'), 'rol' => 'admin'],
         );
 
         // FC01 y BC01: notas de crédito de facturas y de boletas

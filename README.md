@@ -52,6 +52,13 @@ En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.cs
 
 Si el código ya existe, el producto se actualiza y el stock se ajusta al valor del archivo (queda registrado en el kardex).
 
+## Usuarios y roles
+
+- **Administrador**: todo.
+- **Vendedor**: vender, manejar su caja, registrar clientes, cotizaciones y pedidos, y consultar productos y kardex. No puede editar productos ni stock, ver compras, reportes o usuarios, ni emitir notas de crédito.
+
+Los usuarios se crean en **Usuarios** y cada uno cambia su contraseña en **Mi cuenta** (clic en su nombre, arriba a la derecha). Un usuario desactivado ya no puede iniciar sesión.
+
 ## Compras y proveedores
 
 Al registrar una compra (factura, boleta u otro) el stock sube solo y se actualiza el **costo** de cada producto, que es lo que usan los reportes de utilidad. Con factura, el costo se guarda sin IGV (crédito fiscal); con boleta, el IGV forma parte del costo. Si se paga con dinero de la caja, sale como egreso. Una compra registrada por error se puede anular y el stock se descuenta.

@@ -17,10 +17,11 @@
         ['previos.index:pedidos', 'Pedidos', 'M3 7l9-4 9 4-9 4-9-4zm0 0v10l9 4 9-4V7'],
         ['caja.index', 'Caja', 'M3 7h18v12H3zM3 11h18M7 15h2'],
         ['productos.index', 'Productos', 'M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z'],
-        ['compras.index', 'Compras', 'M3 3h2l2 12h12l2-8H6M9 20a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z'],
-        ['proveedores.index', 'Proveedores', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6'],
+        ['compras.index', 'Compras', 'M3 3h2l2 12h12l2-8H6M9 20a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z', true],
+        ['proveedores.index', 'Proveedores', 'M3 21V8l9-5 9 5v13M9 21v-6h6v6', true],
         ['clientes.index', 'Clientes', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM4 21v-1a6 6 0 0112 0v1'],
-        ['reportes.index', 'Reportes', 'M4 20V10m6 10V4m6 16v-7m4 7H2'],
+        ['usuarios.index', 'Usuarios', 'M17 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M10 11a4 4 0 100-8 4 4 0 000 8zm11 9v-1a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8', true],
+        ['reportes.index', 'Reportes', 'M4 20V10m6 10V4m6 16v-7m4 7H2', true],
     ];
     // Una sección está activa en su ruta o en cualquier ruta hermana (productos.edit activa Productos), salvo "Nueva venta"
     // "previos.index:pedidos" es la ruta previos.index con el parámetro pedidos
@@ -41,7 +42,9 @@
        :class="menu ? 'translate-x-0' : '-translate-x-full'">
     <div class="h-16 flex items-center px-5 font-semibold text-blue-700 border-b">{{ config('sunat.empresa.nombre_comercial') ?: config('app.name') }}</div>
     <nav class="p-3 space-y-1">
-        @foreach ($secciones as [$ruta, $texto, $icono])
+        @foreach ($secciones as $seccion)
+            @php([$ruta, $texto, $icono] = $seccion)
+            @continue(($seccion[3] ?? false) && ! auth()->user()->esAdmin())
             <a href="{{ $enlace($ruta) }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm {{ $activa($ruta) ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icono }}"/></svg>
                 {{ $texto }}
@@ -58,7 +61,7 @@
     <span class="ml-auto text-xs font-semibold px-2 py-1 rounded {{ config('sunat.entorno') === 'produccion' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
         SUNAT {{ config('sunat.entorno') === 'produccion' ? 'PRODUCCIÓN' : strtoupper(config('sunat.entorno')) }}
     </span>
-    <span class="hidden sm:block text-sm text-right leading-tight"><span class="font-medium">{{ auth()->user()->name }}</span><br><span class="text-slate-500 text-xs">{{ auth()->user()->email }}</span></span>
+    <a href="{{ route('cuenta') }}" class="hidden sm:block text-sm text-right leading-tight hover:underline"><span class="font-medium">{{ auth()->user()->name }}</span><br><span class="text-slate-500 text-xs">{{ \App\Models\User::ROLES[auth()->user()->rol] ?? '' }} · {{ auth()->user()->email }}</span></a>
     <form method="POST" action="{{ route('logout') }}">@csrf<button class="text-sm text-slate-500 hover:text-slate-900 px-2">Salir</button></form>
 </header>
 @endauth

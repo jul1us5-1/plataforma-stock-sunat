@@ -3,6 +3,7 @@
 @section('contenido')
 <h1 class="text-xl font-semibold">{{ $producto->nombre }} <span class="text-slate-500 font-mono text-base">{{ $producto->codigo }}</span></h1>
 <p class="mb-4">Stock actual: <strong>{{ $producto->stock + 0 }}</strong></p>
+@can('admin')
 <form method="POST" action="{{ route('productos.stock', $producto) }}" class="bg-white rounded-lg shadow p-4 mb-4 flex flex-wrap gap-2 items-end">
     @csrf
     <label>Tipo<select name="tipo" class="block border rounded px-3 py-2"><option value="entrada">Entrada (compra)</option><option value="salida">Salida (merma)</option><option value="ajuste">Ajuste (+/-)</option></select></label>
@@ -10,6 +11,7 @@
     <label class="flex-1">Motivo<input name="motivo" class="block w-full border rounded px-3 py-2"></label>
     <button class="bg-slate-900 text-white rounded px-4 py-2">Registrar</button>
 </form>
+@endcan
 <div class="bg-white rounded-lg shadow overflow-x-auto">
 <table class="w-full text-sm">
     <thead class="bg-slate-50 text-left"><tr><th class="p-2">Fecha</th><th class="p-2">Tipo</th><th class="p-2">Motivo</th><th class="p-2 text-right">Cantidad</th><th class="p-2 text-right">Saldo</th></tr></thead>

@@ -3,15 +3,19 @@
 @section('contenido')
 <div class="flex flex-wrap items-center gap-2 mb-4" x-data="{ importar: false }">
     <h1 class="text-xl font-semibold mr-auto">Productos</h1>
+    @can('admin')
     <a href="{{ route('productos.exportar') }}" class="bg-blue-600 hover:bg-blue-500 text-white rounded px-3 py-1.5 text-sm">Exportar</a>
     <button type="button" @click="importar = !importar" class="bg-blue-600 hover:bg-blue-500 text-white rounded px-3 py-1.5 text-sm">Importar</button>
     <a href="{{ route('productos.create') }}" class="bg-blue-600 hover:bg-blue-500 text-white rounded px-3 py-1.5 text-sm">+ Nuevo</a>
+    @endcan
+    @can('admin')
     <div x-show="importar" x-cloak class="w-full bg-white rounded-lg shadow p-4">
         <p class="text-sm text-slate-600 mb-2">Sube un Excel (.xlsx) o CSV con las columnas <code>codigo, nombre, precio_venta</code> y opcionales <code>stock, stock_minimo, precio_compra, categoria, unidad_medida, afectacion_igv, descripcion</code>. Si el código ya existe se actualiza. También acepta tal cual el reporte de productos exportado de MYPEFACT.</p>
         <form method="POST" action="{{ route('productos.importar') }}" enctype="multipart/form-data" class="flex flex-wrap gap-2">
             @csrf <input type="file" name="archivo" accept=".xlsx,.csv,.txt" required class="text-sm"> <button class="bg-slate-900 text-white rounded px-3 py-1.5 text-sm">Importar</button>
         </form>
     </div>
+    @endcan
 </div>
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <div class="bg-blue-600 text-white px-5 py-3 text-lg">Listado de productos</div>
@@ -40,7 +44,7 @@
                 <td class="p-2 text-right {{ $p->stockBajo() ? 'text-red-600 font-semibold' : '' }}">{{ $p->esServicio() ? '—' : $p->stock + 0 }}</td>
                 <td class="p-2 text-right">S/ {{ number_format($p->precio_venta, 2) }}</td>
                 <td class="p-2 text-center">{{ $p->afectacion_igv === '10' ? 'Sí' : 'No' }}</td>
-                <td class="p-2 text-right"><a href="{{ route('productos.edit', $p) }}" class="text-blue-700 hover:underline">Editar</a></td>
+                <td class="p-2 text-right">@can('admin')<a href="{{ route('productos.edit', $p) }}" class="text-blue-700 hover:underline">Editar</a>@endcan</td>
             </tr>
         @empty
             <tr><td colspan="9" class="p-4 text-center text-slate-500">No hay productos con ese filtro.</td></tr>

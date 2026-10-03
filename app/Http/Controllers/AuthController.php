@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         $credenciales = $request->validate(['email' => ['required', 'email'], 'password' => ['required']]);
 
-        if (! Auth::attempt($credenciales, $request->boolean('remember'))) {
+        if (! Auth::attempt([...$credenciales, 'activo' => true], $request->boolean('remember'))) {
             return back()->withErrors(['email' => 'Correo o contraseña incorrectos.'])->onlyInput('email');
         }
 

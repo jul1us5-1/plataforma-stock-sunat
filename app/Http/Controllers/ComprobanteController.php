@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Comprobante;
 use App\Models\Producto;
 use App\Models\Serie;
+use App\Services\ComprobantePdf;
 use App\Services\ComprobanteService;
 use App\Services\SunatService;
 use Illuminate\Http\Request;
@@ -69,6 +70,19 @@ class ComprobanteController extends Controller
         $sunat->enviar($comprobante);
 
         return back()->with('ok', 'Reenvío a SUNAT: '.$comprobante->estado_sunat);
+    }
+
+    public function pdf(Comprobante $comprobante, string $formato, ComprobantePdf $pdf, Request $request)
+    {
+        $documento = $pdf->generar($comprobante, $formato);
+        $nombre = $pdf->nombreArchivo($comprobante);
+
+        return $request->boolean('descargar') ? $documento->download($nombre) : $documento->stream($nombre);
+    }
+
+    public function pdfPublico(Comprobante $comprobante, string $formato, ComprobantePdf $pdf)
+    {
+        return $pdf->generar($comprobante, $formato)->stream($pdf->nombreArchivo($comprobante));
     }
 
     public function descargar(Comprobante $comprobante, string $archivo)

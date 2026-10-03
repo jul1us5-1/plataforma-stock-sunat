@@ -52,6 +52,10 @@ En **Productos → Importar productos desde Excel o CSV** sube un `.xlsx` o `.cs
 
 Si el código ya existe, el producto se actualiza y el stock se ajusta al valor del archivo (queda registrado en el kardex).
 
+## Impresión y envío al cliente
+
+Cada comprobante tiene **PDF A4** y **ticket de 80 mm**, con el código QR de SUNAT, el hash, el importe en letras y la leyenda de representación impresa. El botón **WhatsApp** abre un mensaje con un enlace firmado al PDF; el cliente puede verlo sin iniciar sesión, pero el enlace no se puede adivinar ni modificar. Para poner tu logo, usa `SUNAT_LOGO=/ruta/al/logo.png`.
+
 ## Reportes
 
 - **Dashboard**: CPE emitidos, monto en comprobantes y en recibos, total general, utilidad, ventas por hora o por día, ventas por método de pago, productos más vendidos, stock bajo y comprobantes pendientes en SUNAT. Se puede filtrar por hoy, ayer, semana, mes, mes anterior o un rango de fechas.
@@ -90,6 +94,5 @@ php artisan test
 
 - Notas de crédito/débito y comunicación de baja (anulaciones).
 - Resumen diario de boletas.
-- PDF con código QR para enviar al cliente.
 - Consulta de RUC/DNI.
 - Despliegue en servidor.

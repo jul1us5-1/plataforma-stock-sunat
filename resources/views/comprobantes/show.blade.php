@@ -8,7 +8,16 @@
     @if ($comprobante->seEnviaASunat() && in_array($comprobante->estado_sunat, ['pendiente', 'error']))
         <form method="POST" action="{{ route('comprobantes.reenviar', $comprobante) }}">@csrf<button class="bg-amber-500 text-white rounded px-3 py-1.5">Enviar a SUNAT</button></form>
     @endif
-    <button onclick="window.print()" class="bg-slate-900 text-white rounded px-3 py-1.5">Imprimir</button>
+    <a href="{{ route('comprobantes.pdf', [$comprobante, 'ticket']) }}" target="_blank" class="bg-slate-900 text-white rounded px-3 py-1.5">Ticket 80 mm</a>
+    <a href="{{ route('comprobantes.pdf', [$comprobante, 'a4']) }}" target="_blank" class="bg-slate-900 text-white rounded px-3 py-1.5">PDF A4</a>
+    <a href="{{ route('comprobantes.pdf', [$comprobante, 'a4']) }}?descargar=1" class="border bg-white rounded px-3 py-1.5">Descargar PDF</a>
+    @php
+        $enlace = \Illuminate\Support\Facades\URL::signedRoute('comprobantes.publico', [$comprobante, 'a4']);
+        $mensaje = "Hola, te envío tu {$comprobante->nombreTipo()} {$comprobante->numero()} por S/ ".number_format($comprobante->total, 2).": {$enlace}";
+        $telefono = preg_replace('/\D/', '', (string) $comprobante->cliente?->telefono);
+        if (strlen($telefono) === 9) { $telefono = '51'.$telefono; }
+    @endphp
+    <a href="https://wa.me/{{ $telefono }}?text={{ rawurlencode($mensaje) }}" target="_blank" class="bg-green-600 text-white rounded px-3 py-1.5">WhatsApp</a>
 </div>
 <div class="bg-white rounded-lg shadow p-6 max-w-3xl mx-auto">
     <div class="flex justify-between gap-4 mb-6">

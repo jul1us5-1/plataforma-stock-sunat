@@ -17,6 +17,10 @@ return [
         'distrito' => env('SUNAT_DISTRITO', 'LIMA'),
         'direccion' => env('SUNAT_DIRECCION', 'AV. PRINCIPAL 123'),
         'cod_local' => env('SUNAT_COD_LOCAL', '0000'),
+        'email' => env('SUNAT_EMAIL'),
+        'telefono' => env('SUNAT_TELEFONO'),
+        // Ruta a un PNG o JPG para el encabezado de los PDF (opcional)
+        'logo' => env('SUNAT_LOGO'),
     ],
 
     // Usuario secundario SOL. En beta SUNAT acepta MODDATOS / moddatos

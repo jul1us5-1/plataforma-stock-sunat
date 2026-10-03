@@ -7,12 +7,17 @@ use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteController;
+use App\Services\ComprobantePdf;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'create'])->name('login');
     Route::post('login', [AuthController::class, 'store']);
 });
+
+// Enlace firmado para que el cliente vea su comprobante sin iniciar sesión (WhatsApp, correo)
+Route::get('cpe/{comprobante}/{formato}', [ComprobanteController::class, 'pdfPublico'])
+    ->whereIn('formato', ComprobantePdf::FORMATOS)->middleware('signed')->name('comprobantes.publico');
 
 Route::post('logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
 
@@ -38,6 +43,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('comprobantes', ComprobanteController::class)->only(['index', 'create', 'store', 'show']);
     Route::post('comprobantes/{comprobante}/reenviar', [ComprobanteController::class, 'reenviar'])->name('comprobantes.reenviar');
+    Route::get('comprobantes/{comprobante}/pdf/{formato}', [ComprobanteController::class, 'pdf'])
+        ->whereIn('formato', ComprobantePdf::FORMATOS)->name('comprobantes.pdf');
     Route::get('comprobantes/{comprobante}/{archivo}', [ComprobanteController::class, 'descargar'])
         ->whereIn('archivo', ['xml', 'cdr'])->name('comprobantes.descargar');
 });
